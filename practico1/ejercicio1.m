@@ -1,3 +1,5 @@
+% Modelo Matemático:
+% Sea X_i > 0 para i = 1..N. La suma total es: S = sum_{i=1}^N (X_i)
 
 N_valores = input('Ingrese la cantidad de valores a ingresar: '); 
 
