@@ -4,6 +4,11 @@
 
 n = input('Ingrese la cantidad de términos: ');
 
+if n <= 0
+    printf("Error: la cantidad de términos debe ser un número natural.\n")
+    return
+endif
+
 e = 1;
 fact = 1;
 
