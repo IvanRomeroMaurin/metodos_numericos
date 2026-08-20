@@ -1,3 +1,8 @@
+% Modelo Matemático (Sucesión de Fibonacci):
+% Sea F = {F_1, F_2, ..., F_N} con N = 200.
+% Casos base:  F_1 = 0,  F_2 = 1
+% Recurrencia: F_i = F_{i-1} + F_{i-2}  para i = 3, 4, ..., N
+
 % Definimos la cantidad de términos
 N = 200;
 
