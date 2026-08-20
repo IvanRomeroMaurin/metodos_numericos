@@ -6,7 +6,7 @@
 
 1; % Indica a Octave que este archivo es un SCRIPT
 
-% Definición de la función (debe estar definida antes de llamarla)
+% Definición
 function [x1, x2] = raices(a, b, c) 
     discriminante = b^2 - 4*a*c;
     if (discriminante >= 0)
