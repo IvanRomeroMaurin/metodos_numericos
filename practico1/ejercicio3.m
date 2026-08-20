@@ -6,7 +6,7 @@
 % Definimos la cantidad de términos
 N = 200;
 
-% Pre-asignamos memoria para el vector (buena práctica para rendimiento)
+% Pre-asignamos memoria para el vector
 fib = zeros(1, N);
 
 % Inicializamos los dos primeros términos de la sucesión
