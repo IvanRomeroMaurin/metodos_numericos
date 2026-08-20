@@ -1,6 +1,6 @@
-% Modelo Matemático (Ejercicio 4):
-% Enunciado: 5x + 3x^2 = 3x + 1
-% Reordenando a la forma estándar ax^2 + bx + c = 0:
+% Modelo Matemático Ejercicio 4:
+% Enunciado 5x + 3x^2 = 3x + 1
+% Reordenando  ax^2 + bx + c = 0:
 % 3x^2 + 2x - 1 = 0
 % Coeficientes: a = 3, b = 2, c = -1
 
