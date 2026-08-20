@@ -1,14 +1,11 @@
 
-N_valores = 10; 
-
-
-valores_simples = 1 + rand(1, N_valores) * 99;
-
+N_valores = input('Ingrese la cantidad de valores a ingresar: '); 
 
 suma_simple = 0;
 for i = 1:N_valores
-    suma_simple = suma_simple + valores_simples(i);
+    valor = input(sprintf('Ingrese el valor %d: ', i));
+    suma_simple = suma_simple + valor;
 end
 
-printf('Suma directa de los %d números aleatorios: %.4f\n', N_valores, suma_simple);
+printf('Suma directa de los %d números ingresados: %.4f\n', N_valores, suma_simple);
 
