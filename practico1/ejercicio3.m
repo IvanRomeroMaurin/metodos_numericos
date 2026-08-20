@@ -14,8 +14,8 @@ for i = 3:N
 end
 
 % Mostramos los resultados (por ejemplo, los primeros 10 y los últimos 5)
-disp('Primeros 10 números de Fibonacci:');
-disp(fib(1:10));
+disp('Primeros 20 números de Fibonacci:');
+disp(fib(1:20));
 
-disp('Últimos 5 números de Fibonacci calculados:');
-disp(fib(end-4:end));
+disp('Los 200 números de Fibonacci:');
+disp(fib(1:N));
