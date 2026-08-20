@@ -5,7 +5,7 @@
 n = input('Ingrese la cantidad de términos: ');
 
 if n <= 0
-    printf("Error: la cantidad de términos debe ser un número natural.\n")
+    printf("Error: la cantidad de términos debe ser un número mayor a 0.\n")
     return
 endif
 
