@@ -21,9 +21,6 @@ end
 tiempo = toc;
 
 % Mostramos los resultados (por ejemplo, los primeros 10 y los últimos 5)
-disp('Primeros 20 números de Fibonacci:');
-disp(fib(1:20));
-
-disp('Los 200 números de Fibonacci:');
+printf('Primeros %d números de Fibonacci:', N);
 disp(fib(1:N));
 printf('Tiempo de proceso: %.6f segundos\n', tiempo);
