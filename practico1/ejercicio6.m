@@ -37,7 +37,7 @@ endwhile
 tiempo = toc;
 
 % Impresión formateada de resultados
-printf('\n--- Resultados del Ejercicio 6 ---\n');
+printf('\nResultados del Ejercicio 6\n');
 printf('Decimales exactos solicitados: %d\n', d);
 printf('Términos necesarios (k): %d\n', k);
 printf('Valor aproximado de Pi: %.8f\n', pi_aprox);
