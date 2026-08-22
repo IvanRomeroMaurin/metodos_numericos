@@ -11,12 +11,15 @@ if n <= 0
     return
 endif
 
+tic;
 suma = 0;
 for i = 0:(n-1)
     termino = (x^i) / factorial(i);
     suma = suma + termino;
 endfor
+tiempo = toc;
 
 printf("La suma de los primeros %d terminos de la serie es: %f \n", n, suma);
+printf('Tiempo de proceso: %.6f segundos\n', tiempo);
   
 

@@ -19,7 +19,10 @@ end
 N = 200;
 valores = randi([1, 1000], 1, N);
 
+tic;
 resultado = sumar_pares(valores);
+tiempo = toc;
 
 printf('Se generaron %d números enteros positivos de prueba.\n', N);
 printf('Suma de los valores que son pares: %d\n', resultado);
+printf('Tiempo de proceso: %.6f segundos\n', tiempo);

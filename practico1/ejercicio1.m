@@ -4,6 +4,7 @@
 N_valores = input('Ingrese la cantidad de valores a ingresar: '); 
 
 suma_simple = 0;
+tic;
 for i = 1:N_valores
     valor = input(sprintf('Ingrese el valor %d: ', i));
     while (valor <= 0)
@@ -12,6 +13,8 @@ for i = 1:N_valores
     endwhile
     suma_simple = suma_simple + valor;
 end
+tiempo = toc;
 
 printf('Suma directa de los %d números ingresados: %.2f\n', N_valores, suma_simple);
+printf('Tiempo de proceso: %.6f segundos\n', tiempo);
 

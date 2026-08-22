@@ -13,10 +13,12 @@ fib = zeros(1, N);
 fib(1) = 0;
 fib(2) = 1;
 
+tic;
 % Calculamos los siguientes términos mediante un bucle
 for i = 3:N
     fib(i) = fib(i-1) + fib(i-2);
 end
+tiempo = toc;
 
 % Mostramos los resultados (por ejemplo, los primeros 10 y los últimos 5)
 disp('Primeros 20 números de Fibonacci:');
@@ -24,3 +26,4 @@ disp(fib(1:20));
 
 disp('Los 200 números de Fibonacci:');
 disp(fib(1:N));
+printf('Tiempo de proceso: %.6f segundos\n', tiempo);

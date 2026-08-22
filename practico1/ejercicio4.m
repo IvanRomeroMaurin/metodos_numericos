@@ -24,8 +24,11 @@ a = 3;
 b = 2;
 c = -1;
 
+tic;
 [r1, r2] = raices(a, b, c);
+tiempo = toc;
 
 fprintf('Las raíces son: x1 = %.2f y x2 = %.2f\n', r1, r2);
+printf('Tiempo de proceso: %.6f segundos\n', tiempo);
 
 

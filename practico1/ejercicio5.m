@@ -9,6 +9,7 @@ if n <= 0
     return
 endif
 
+tic;
 e = 1;
 fact = 1;
 
@@ -16,6 +17,8 @@ for i = 1:n
     fact = fact * i;
     e = e + (1/fact);
 end
+tiempo = toc;
 
 
-printf('Valor aproximado de e con %d términos: %.8f\n', n, e);;
+printf('Valor aproximado de e con %d términos: %.8f\n', n, e);
+printf('Tiempo de proceso: %.6f segundos\n', tiempo);

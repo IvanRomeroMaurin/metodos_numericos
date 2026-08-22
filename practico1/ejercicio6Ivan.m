@@ -42,4 +42,4 @@ printf('Decimales exactos solicitados: %d\n', d);
 printf('Términos necesarios (k): %d\n', k);
 printf('Valor aproximado de Pi: %.8f\n', pi_aprox);
 printf('Valor real de Pi (Octave): %.8f\n', pi);
-printf('Tiempo de ejecución: %.6f segundos\n', tiempo);
+printf('Tiempo de proceso: %.6f segundos\n', tiempo);
