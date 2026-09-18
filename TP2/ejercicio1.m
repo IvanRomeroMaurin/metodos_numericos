@@ -10,38 +10,38 @@ tic;
 
 % Inciso a: p = pi, p* = 22/7
 p_a = pi;
-p_ast_a = 22/7;
-ea_a = abs(p_a - p_ast_a);
+p_aprox_a = 22/7;
+ea_a = abs(p_a - p_aprox_a);
 er_a = ea_a / abs(p_a);
 
 % Inciso b: p = pi, p* = 3.1416
 p_b = pi;
-p_ast_b = 3.1416;
-ea_b = abs(p_b - p_ast_b);
+p_aprox_b = 3.1416;
+ea_b = abs(p_b - p_aprox_b);
 er_b = ea_b / abs(p_b);
 
 % Inciso c: p = e, p* = 2.718
 p_c = exp(1);
-p_ast_c = 2.718;
-ea_c = abs(p_c - p_ast_c);
+p_aprox_c = 2.718;
+ea_c = abs(p_c - p_aprox_c);
 er_c = ea_c / abs(p_c);
 
 % Inciso d: p = sqrt(2), p* = 1.414
 p_d = sqrt(2);
-p_ast_d = 1.414;
-ea_d = abs(p_d - p_ast_d);
+p_aprox_d = 1.414;
+ea_d = abs(p_d - p_aprox_d);
 er_d = ea_d / abs(p_d);
 
 % Inciso e: p = e^10, p* = 22000
 p_e = exp(10);
-p_ast_e = 22000;
-ea_e = abs(p_e - p_ast_e);
+p_aprox_e = 22000;
+ea_e = abs(p_e - p_aprox_e);
 er_e = ea_e / abs(p_e);
 
 % Inciso f: p = 8!, p* = 39900
 p_f = factorial(8);
-p_ast_f = 39900;
-ea_f = abs(p_f - p_ast_f);
+p_aprox_f = 39900;
+ea_f = abs(p_f - p_aprox_f);
 er_f = ea_f / abs(p_f);
 
 tiempo = toc;
