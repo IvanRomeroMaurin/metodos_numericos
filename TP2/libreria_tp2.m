@@ -10,12 +10,14 @@ function lib = libreria_tp2()
     %   lib (struct): Estructura que contiene punteros a las funciones:
     %       - error: Calcula el error absoluto, relativo y relativo porcentual.
     %       - punto_flotante: Obtiene la representación en punto flotante normalizado.
-    %       - redondear: Aproxima un número usando redondeo a k dígitos.
-    %       - truncar: Aproxima un número usando truncamiento a k dígitos.
+    %       - normalizar: Aplica representación normalizada con una función de corte.
+    %       - redondear: Aproxima un número usando redondeo a k dígitos (opcional: normalizar).
+    %       - truncar: Aproxima un número usando truncamiento a k dígitos (opcional: normalizar).
     
     % Retornamos una estructura con las funciones disponibles
     lib.error          = @calcular_error;
     lib.punto_flotante = @punto_flotante;
+    lib.normalizar     = @normalizar;
     lib.redondear      = @redondear_k;
     lib.truncar        = @truncar_k;
 end
@@ -71,55 +73,77 @@ function [signo, m, e] = punto_flotante(x)
 end
 
 % -------------------------------------------------------------------------
-% 3. Función de representación en punto flotante normalizado con REDONDEO
-%    a k dígitos significativos: +- 0.d1 d2 ... dk * 10^e
+% 3. Función auxiliar para normalizar y procesar la mantisa
 % -------------------------------------------------------------------------
-function res = redondear_k(x, k)
-    % REDONDEAR_K Aproxima un número en punto flotante normalizado a k dígitos por redondeo.
+function res = normalizar(x, k, func_corte)
+    % NORMALIZAR Extrae la mantisa normalizada, aplica la función
+    % de corte (round o fix) a k dígitos y reconstruye el número.
+    [signo, m, e] = punto_flotante(x);
+    m_aproximada = func_corte(m * (10^k)) / (10^k);
+    res = signo * m_aproximada * (10^e);
+end
+
+% -------------------------------------------------------------------------
+% 4. Función de representación con REDONDEO a k dígitos
+% -------------------------------------------------------------------------
+function res = redondear_k(x, k, usar_normalizacion)
+    % REDONDEAR_K Aproxima un número a k dígitos por redondeo simétrico.
     %
     % Parámetros:
-    %   x (double): Número real original a redondear.
-    %   k (int):    Cantidad de dígitos significativos para redondear la mantisa.
+    %   x                  (double):  Número real original a redondear.
+    %   k                  (int):     Cantidad de dígitos.
+    %   usar_normalizacion (boolean): Opcional (por defecto true).
+    %                                 - true:  Normaliza a punto flotante (k cifras significativas).
+    %                                 - false: Redondea directamente a k decimales.
     %
     % Retorna:
     %   res (double): Valor aproximado mediante redondeo simétrico.
     
+    if nargin < 3 || isempty(usar_normalizacion)
+        usar_normalizacion = true;
+    end
+    
     if x == 0
         res = 0;
         return;
     end
     
-    [signo, m, e] = punto_flotante(x);
-    
-    % Redondeo a k dígitos
-    m_red = round(m * (10^k)) / (10^k);
-    
-    res = signo * m_red * (10^e);
+    if usar_normalizacion
+        res = normalizar(x, k, @round);
+    else
+        res = round(x * (10^k)) / (10^k);
+    end
 end
 
 % -------------------------------------------------------------------------
-% 4. Función de representación en punto flotante normalizado con TRUNCAMIENTO
-%    a k dígitos significativos (corte directo hacia cero)
+% 5. Función de representación con TRUNCAMIENTO a k dígitos
 % -------------------------------------------------------------------------
-function res = truncar_k(x, k)
-    % TRUNCAR_K Aproxima un número en punto flotante normalizado a k dígitos por truncamiento.
+function res = truncar_k(x, k, usar_normalizacion)
+    % TRUNCAR_K Aproxima un número a k dígitos por truncamiento hacia cero.
     %
     % Parámetros:
-    %   x (double): Número real original a truncar.
-    %   k (int):    Cantidad de dígitos significativos para truncar la mantisa.
+    %   x                  (double):  Número real original a truncar.
+    %   k                  (int):     Cantidad de dígitos.
+    %   usar_normalizacion (boolean): Opcional (por defecto true).
+    %                                 - true:  Normaliza a punto flotante (k cifras significativas).
+    %                                 - false: Trunca directamente a k decimales.
     %
     % Retorna:
-    %   res (double): Valor aproximado mediante corte (truncamiento) hacia cero.
+    %   res (double): Valor aproximado mediante truncamiento hacia cero.
+    
+    if nargin < 3 || isempty(usar_normalizacion)
+        usar_normalizacion = true;
+    end
     
     if x == 0
         res = 0;
         return;
     end
     
-    [signo, m, e] = punto_flotante(x);
-    
-    % Truncamiento a k dígitos
-    m_trunc = fix(m * (10^k)) / (10^k);
-    
-    res = signo * m_trunc * (10^e);
+    if usar_normalizacion
+        res = normalizar(x, k, @fix);
+    else
+        res = fix(x * (10^k)) / (10^k);
+    end
 end
+
