@@ -17,8 +17,8 @@ lib = libreria_tp3();
 % -------------------------------------------------------------------------
 % P(x) = 8*x + 0.3*x^2 - 0.0013*x^3 - 372
 % Derivadas analíticas:
-% P'(x)  = 8 + 0.6*x - 0.0039*x^2
-% P''(x) = 0.6 - 0.0078*x
+% dP(x)  = 8 + 0.6*x - 0.0039*x^2
+% d2P(x) = 0.6 - 0.0078*x
 
 P   = @(x) 8.*x + 0.3.*(x.^2) - 0.0013.*(x.^3) - 372;
 dP  = @(x) 8 + 0.6.*x - 0.0039.*(x.^2);
@@ -26,8 +26,8 @@ d2P = @(x) 0.6 - 0.0078.*x;
 
 printf('Función de Utilidad mensual:\n');
 printf('  P(x)   = 8x + 0.3x^2 - 0.0013x^3 - 372\n');
-printf('  P''(x)  = 8 + 0.6x - 0.0039x^2\n');
-printf('  P''''(x) = 0.6 - 0.0078x\n\n');
+printf("  P'(x)  = 8 + 0.6x - 0.0039x^2\n");
+printf("  P''(x) = 0.6 - 0.0078x\n\n");
 
 % -------------------------------------------------------------------------
 % Inciso a: Evaluación gráfica con fplot
@@ -138,8 +138,8 @@ printf('%s\n\n', repmat('-', 1, 85));
 
 printf('Conclusiones teóricas y prácticas:\n');
 printf('1. Condiciones de Fourier:\n');
-printf('   - En [24, 26]: P''(x) > 0 y P''''(x) > 0. P(26)*P''''(26) > 0 => x0 = 26.\n');
-printf('   - En [250, 252]: P''(x) < 0 y P''''(x) < 0. P(252)*P''''(252) > 0 => x0 = 252.\n');
+printf("   - En [24, 26]: dP(x) > 0 y d2P(x) > 0. P(26)*d2P(26) > 0 => x0 = 26.\n");
+printf("   - En [250, 252]: dP(x) < 0 y d2P(x) < 0. P(252)*d2P(252) > 0 => x0 = 252.\n");
 printf('   - Al cumplir todas las condiciones, Newton-Raphson converge de manera monótona\n');
 printf('     y cuadrática en poquísimas iteraciones (%d y %d respectivamente).\n\n', iter_1, iter_2);
 

@@ -4,7 +4,30 @@ printf('--- Ejercicio 3: Metodo de Iteracion con Aceleracion de Aitken ---\n\n')
 f = @(x) 5*x - 200*log(400/(500-x)) - 1000;
 g = @(x) (1000 + 200*log(400/(500-x))) / 5;
 
-valor_inicial      = input('Ingrese el valor inicial x0: ');
+% Librería de métodos numéricos
+lib = libreria_tp3();
+
+printf('-----------------------------------------------------------------\n');
+printf(' Separación de raíces por Método de Tanteo\n');
+printf('-----------------------------------------------------------------\n');
+a_tanteo = input('Ingrese el límite inferior para tanteo a (ej. 0): ');
+b_tanteo = input('Ingrese el límite superior para tanteo b (ej. 400): ');
+paso     = input('Ingrese el incremento/paso para tanteo (ej. 50): ');
+
+printf('\nEjecutando tanteo en [%.2f, %.2f] con paso delta = %.4f...\n', a_tanteo, b_tanteo, paso);
+
+intervalos_encontrados = lib.tanteo(f, a_tanteo, b_tanteo, paso, true);
+
+if isempty(intervalos_encontrados)
+    error('No se encontraron cambios de signo en el intervalo dado.');
+end
+
+a_raiz = intervalos_encontrados(1, 1);
+b_raiz = intervalos_encontrados(1, 2);
+printf('\n-> Raíz separada con éxito en el intervalo: [%.4f, %.4f]\n\n', a_raiz, b_raiz);
+
+printf('-----------------------------------------------------------------\n');
+valor_inicial      = input(sprintf('Ingrese el valor inicial x0 (en [%.2f, %.2f]): ', a_raiz, b_raiz));
 tolerancia         = input('Ingrese la cota de error: ');
 usar_aitken        = input('Desea usar Aceleracion de Aitken? (1=Si, 0=No): ');
 

@@ -44,30 +44,29 @@ function intervalos = metodo_tanteo(f, a, b, paso, mostrar_tabla)
     f_actual = f(x_actual);
 
     if mostrar_tabla
-        printf('\n%-5s | %-12s | %-14s | %-12s | %-14s | %-10s\n', ...
-               'Paso', 'x_i', 'f(x_i)', 'x_{i+1}', 'f(x_{i+1})', 'Cambio Signo');
-        printf('%s\n', repmat('-', 1, 78));
+        printf('\n%-5s | %-12s | %-14s | %-15s\n', ...
+               'Paso', 'x', 'f(x)', 'Cambio Signo');
+        printf('%s\n', repmat('-', 1, 52));
+        printf('%5d | %12.4f | %14.6f | %-15s\n', 1, x_actual, f_actual, '-');
     end
 
-    k = 1;
+    k = 2;
     while x_actual < b
         x_sig = min(x_actual + paso, b);
         f_sig = f(x_sig);
 
         hay_cambio = (f_actual * f_sig <= 0);
 
-        if mostrar_tabla
-            if hay_cambio
-                marca = 'SI (Raiz)';
-            else
-                marca = 'NO';
-            end
-            printf('%5d | %12.4f | %14.6f | %12.4f | %14.6f | %-10s\n', ...
-                   k, x_actual, f_actual, x_sig, f_sig, marca);
+        if hay_cambio
+            marca = 'SI (Raiz)';
+            intervalos = [intervalos; x_actual, x_sig];
+        else
+            marca = 'NO';
         end
 
-        if hay_cambio
-            intervalos = [intervalos; x_actual, x_sig];
+        if mostrar_tabla
+            printf('%5d | %12.4f | %14.6f | %-15s\n', ...
+                   k, x_sig, f_sig, marca);
         end
 
         x_actual = x_sig;
