@@ -228,19 +228,19 @@ function [raiz, iter, tabla] = ejecutar_newton_raphson(f, x0, tol, max_iter)
         x_sig = x - (fx / dfx);
         error_paso = abs(x_sig - x);
 
-        printf('%4d | %14.8f | %14.6e | %14.6e | %12.6e\n', ...
-               k - 1, x, fx, dfx, error_paso);
-
-        tabla = [tabla; k - 1, x, fx, dfx, error_paso];
-
         % Criterio de parada
         if error_paso < tol || abs(fx) < tol
+            printf('%4d | %14.8f | %14.6e | %14.6e | %12.6e  (Fin)\n', ...
+                   k - 1, x, fx, dfx, error_paso);
+            tabla = [tabla; k - 1, x, fx, dfx, error_paso];
             raiz = x_sig;
             iter = k;
-            printf('%4d | %14.8f | %14.6e | %14.6e | %12.6e  (Fin)\n', ...
-                   k, x_sig, f(x_sig), deriv_primera(f, x_sig), 0);
             printf('%s\n', repmat('-', 1, 68));
             return;
+        else
+            printf('%4d | %14.8f | %14.6e | %14.6e | %12.6e\n', ...
+                   k - 1, x, fx, dfx, error_paso);
+            tabla = [tabla; k - 1, x, fx, dfx, error_paso];
         end
 
         x = x_sig;
