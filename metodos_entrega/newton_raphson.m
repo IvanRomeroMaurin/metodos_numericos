@@ -4,7 +4,7 @@
 %
 % Características:
 %   1. Carga de la función f(x) por teclado de forma interactiva.
-%   2. Cálculo automático de derivadas (f'(x) y f''(x)) por diferencias
+%   2. Cálculo automático de derivadas (f'(x) y f''(x)) por diferencias             '
 %      finitas de alta precisión (orden O(h^4)), sin requerir ingreso manual.
 %   3. Separación de raíces por Método de Tanteo (búsqueda incremental).
 %   4. Validación de las condiciones suficientes de convergencia de Fourier.
