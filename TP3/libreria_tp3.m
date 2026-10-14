@@ -18,14 +18,14 @@ end
 % -------------------------------------------------------------------------
 % 1. Método de Tanteo (Búsqueda Incremental para Separación de Raíces)
 % -------------------------------------------------------------------------
-function intervalos = metodo_tanteo(f, a, b, paso, mostrar_tabla)
-    % METODO_TANTEO Recorre [a, b] evaluando cambios de signo f(x)*f(x+paso) <= 0
+function intervalos = metodo_tanteo(f, a, b, incremento, mostrar_tabla)
+    % METODO_TANTEO Recorre [a, b] evaluando cambios de signo f(x)*f(x+incremento) <= 0
     %
     % Parámetros:
     %   f             (function_handle): Función a evaluar f(x).
     %   a             (double):          Límite inferior del intervalo global.
     %   b             (double):          Límite superior del intervalo global.
-    %   paso          (double):          Incremento o paso de muestreo (delta x).
+    %   incremento    (double):          Incremento de muestreo (delta x).
     %   mostrar_tabla (boolean):         (Opcional, por defecto true) Muestra tabla.
     %
     % Retorna:
@@ -35,8 +35,8 @@ function intervalos = metodo_tanteo(f, a, b, paso, mostrar_tabla)
         mostrar_tabla = true;
     end
 
-    if paso <= 0
-        error('El paso del método de tanteo debe ser un valor positivo mayor que cero.');
+    if incremento <= 0
+        error('El incremento del método de tanteo debe ser un valor positivo mayor que cero.');
     end
 
     intervalos = [];
@@ -52,7 +52,7 @@ function intervalos = metodo_tanteo(f, a, b, paso, mostrar_tabla)
 
     k = 2;
     while x_actual < b
-        x_sig = min(x_actual + paso, b);
+        x_sig = min(x_actual + incremento, b);
         f_sig = f(x_sig);
 
         hay_cambio = (f_actual * f_sig <= 0);
@@ -243,11 +243,11 @@ end
 % -------------------------------------------------------------------------
 function [raiz, iter, tabla] = metodo_newton_raphson(f, df, x0, tol, max_iter, mostrar_tabla)
     % METODO_NEWTON_RAPHSON Aproxima la raíz usando rectas tangentes:
-    % x_{k+1} = x_k - f(x_k) / f'(x_k)
+    % x_{k+1} = x_k - f(x_k) / df(x_k)
     %
     % Parámetros:
     %   f             (function_handle): Función f(x).
-    %   df            (function_handle): Derivada f'(x).
+    %   df            (function_handle): Derivada df(x).
     %   x0            (double):          Punto inicial.
     %   tol           (double):          Cota de error admisible (|x_{k+1} - x_k| < tol).
     %   max_iter      (int):             (Opcional, por defecto 100) Máximo de iteraciones.
@@ -256,7 +256,7 @@ function [raiz, iter, tabla] = metodo_newton_raphson(f, df, x0, tol, max_iter, m
     % Retorna:
     %   raiz  (double): Valor aproximado de la raíz.
     %   iter  (int):    Cantidad de iteraciones ejecutadas.
-    %   tabla (matriz): Filas con [k, x_k, f(x_k), f'(x_k), error].
+    %   tabla (matriz): Filas con [k, x_k, f(x_k), df(x_k), error].
 
     if nargin < 5 || isempty(max_iter)
         max_iter = 100;
@@ -269,7 +269,7 @@ function [raiz, iter, tabla] = metodo_newton_raphson(f, df, x0, tol, max_iter, m
         printf('\n--- Método de Newton-Raphson ---\n');
         printf('Punto inicial x0 = %.6f | Tolerancia = %.6e\n\n', x0, tol);
         printf('%-4s | %-12s | %-14s | %-14s | %-12s\n', ...
-               'k', 'x_k', 'f(x_k)', "f'(x_k)", 'Error Paso');
+               'k', 'x_k', 'f(x_k)', 'f''(x_k)', 'Error Paso');
         printf('%s\n', repmat('-', 1, 68));
     end
 
@@ -321,14 +321,14 @@ function [cumple, x0_fourier, info] = analizar_fourier(f, df, d2f, a, b, mostrar
     % ANALIZAR_FOURIER Evalúa las condiciones suficientes de convergencia de
     % Fourier para el método de Newton-Raphson en el intervalo [a, b]:
     % 1. f(a) * f(b) < 0 (Existencia de raíz por Bolzano)
-    % 2. f'(x) != 0 y no cambia de signo en [a, b] (Monotonía estricta)
-    % 3. f''(x) != 0 y no cambia de signo en [a, b] (Concavidad estricta)
-    % 4. Elección de x0: aquel extremo donde f(x0) * f''(x0) > 0
+    % 2. df(x) != 0 y no cambia de signo en [a, b] (Monotonía estricta)
+    % 3. d2f(x) != 0 y no cambia de signo en [a, b] (Concavidad estricta)
+    % 4. Elección de x0: aquel extremo donde f(x0) * d2f(x0) > 0
     %
     % Parámetros:
     %   f               (function_handle): Función f(x).
-    %   df              (function_handle): Primera derivada f'(x).
-    %   d2f             (function_handle): Segunda derivada f''(x).
+    %   df              (function_handle): Primera derivada df(x).
+    %   d2f             (function_handle): Segunda derivada d2f(x).
     %   a               (double):          Límite inferior.
     %   b               (double):          Límite superior.
     %   mostrar_detalle (boolean):         (Opcional, por defecto true)
@@ -358,7 +358,7 @@ function [cumple, x0_fourier, info] = analizar_fourier(f, df, d2f, a, b, mostrar
     c2_monotonia  = (all(df_vals > 0) || all(df_vals < 0)) && all(abs(df_vals) > eps);
     c3_concavidad = (all(d2f_vals > 0) || all(d2f_vals < 0)) && all(abs(d2f_vals) > eps);
 
-    % Determinación de x0 según f(x0) * f''(x0) > 0
+    % Determinación de x0 según f(x0) * d2f(x0) > 0
     prod_a = fa * d2fa;
     prod_b = fb * d2fb;
 
@@ -394,19 +394,19 @@ function [cumple, x0_fourier, info] = analizar_fourier(f, df, d2f, a, b, mostrar
         end
 
         printf('\n2. Monotonía (Primera derivada): f''(x) != 0 sin cambio de signo\n');
-        printf("   f'(%.4f) = %11.4e  |  f'(%.4f) = %11.4e\n", a, dfa, b, dfb);
+        printf('   f''(%.4f) = %11.4e  |  f''(%.4f) = %11.4e\n', a, dfa, b, dfb);
         if c2_monotonia
-            printf("   -> CUMPLE: f'(x) no se anula y conserva el mismo signo en el intervalo.\n");
+            printf('   -> CUMPLE: f''(x) no se anula y conserva el mismo signo en el intervalo.\n');
         else
-            printf("   -> NO CUMPLE: f'(x) cambia de signo o se anula.\n");
+            printf('   -> NO CUMPLE: f''(x) cambia de signo o se anula.\n');
         end
 
         printf('\n3. Concavidad (Segunda derivada): f''''(x) != 0 sin cambio de signo\n');
-        printf("   f''(%.4f) = %11.4e  |  f''(%.4f) = %11.4e\n", a, d2fa, b, d2fb);
+        printf('   f''''(%.4f) = %11.4e  |  f''''(%.4f) = %11.4e\n', a, d2fa, b, d2fb);
         if c3_concavidad
-            printf("   -> CUMPLE: f''(x) no tiene puntos de inflexión en el intervalo.\n");
+            printf('   -> CUMPLE: f''''(x) no tiene puntos de inflexión en el intervalo.\n');
         else
-            printf("   -> NO CUMPLE: f''(x) cambia de signo en el intervalo.\n");
+            printf('   -> NO CUMPLE: f''''(x) cambia de signo en el intervalo.\n');
         end
 
         printf('\n4. Elección del punto inicial x0 tal que f(x0) * f''''(x0) > 0:\n');
