@@ -1,0 +1,2 @@
+Intervalo medio y newton rapson 
+
