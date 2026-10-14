@@ -4,11 +4,65 @@
 %
 %   1. Carga de la función f(x) por teclado.
 %   2. Separación de raíces por Método de Tanteo.
-%   3. Validación de las condiciones del método en cada intervalo.
-%   4. Cálculo de todas las raíces por Intervalo Medio.
+%   3. Gráfica de la función con fplot y la recta f(x) = 0.
+%   4. Validación de las condiciones del método en cada intervalo.
+%   5. Cálculo de todas las raíces por Intervalo Medio.
+%   6. Marcado de las raíces halladas sobre la gráfica.
 % =========================================================================
 
 1; % Indica a Octave que el archivo es un script con funciones
+
+% -------------------------------------------------------------------------
+% Graficador de función
+% -------------------------------------------------------------------------
+function graficar_funcion(f, a, b, f_str, raices)
+    % Grafica f(x) en [a, b] con fplot, la recta f(x) = 0 y, si se pasan,
+    % las raíces calculadas marcadas en rojo con su valor.
+    if nargin < 5
+        raices = [];
+    end
+    raices = raices(isfinite(raices));
+
+    try
+        figure(1);
+        clf;
+        fplot(f, [a, b], 'b-', 'LineWidth', 2);
+        h_f = findobj(gca, 'Type', 'line');
+        hold on; grid on;
+        h_eje = line([a, b], [0, 0], 'Color', 'k', 'LineStyle', '--', 'LineWidth', 1);
+        xlabel('x');
+        ylabel('f(x)');
+        title(['f(x) = ' f_str]);
+
+        % Límites en y robustos: ignora valores no finitos y recorta los
+        % picos de asíntotas (ej. 1/x) para que el cruce con el eje se vea
+        y = sort(f(linspace(a, b, 500)));
+        y = y(isfinite(y));
+        if ~isempty(y)
+            n = numel(y);
+            y_min = min(y(max(1, round(0.02 * n))), 0);
+            y_max = max(y(max(1, round(0.98 * n))), 0);
+            margen = 0.1 * max(y_max - y_min, eps);
+            ylim([y_min - margen, y_max + margen]);
+        end
+        xlim([a, b]);
+
+        if isempty(raices)
+            legend([h_f, h_eje], {'f(x)', 'f(x) = 0'}, 'Location', 'northeastoutside');
+        else
+            h_r = plot(raices, f(raices), 'ko', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+            for k = 1:numel(raices)
+                text(raices(k), 0, sprintf('  x%d = %.4f', k, raices(k)), ...
+                     'VerticalAlignment', 'bottom', 'FontWeight', 'bold');
+            end
+            legend([h_f, h_eje, h_r], {'f(x)', 'f(x) = 0', 'Raíces'}, 'Location', 'northeastoutside');
+        end
+        hold off;
+        drawnow;
+    catch err
+        printf('No se pudo generar la gráfica: %s\n', err.message);
+    end
+end
 
 % -------------------------------------------------------------------------
 % Método de Tanteo: recorre [a, b] con el incremento dado y guarda los
@@ -101,16 +155,16 @@ function [raiz, iter, n_teorico] = metodo_intervalo_medio(f, a, b, tol, max_iter
     n_teorico = ceil(log2((b - a) / tol));
 
     printf('\nIteraciones teóricas mínimas estimadas: %d\n\n', n_teorico);
-    printf('%-4s | %-22s | %-11s | %-14s | %-12s\n', ...
+    printf('%-4s | %-26s | %-11s | %-14s | %-12s\n', ...
            'i', 'Intervalo', 'x', 'f(x)', 'Error');
-    printf('%s\n', repmat('-', 1, 75));
+    printf('%s\n', repmat('-', 1, 79));
 
     for k = 1:max_iter
         c = (a + b) / 2;
         fc = f(c);
         cota_error = (b - a) / 2;
 
-        printf('%4d | [%9.6f, %9.6f] | %11.6f | %14.6e | %12.6f\n', ...
+        printf('%4d | [%11.6f, %11.6f] | %11.6f | %14.6e | %12.6f\n', ...
                k, a, b, c, fc, cota_error);
 
         if cota_error < tol || fc == 0
@@ -186,7 +240,11 @@ for i = 1:num_raices
     printf('  Raíz %d: [%.4f, %.4f]\n', i, intervalos(i, 1), intervalos(i, 2));
 end
 
-% 3. Parámetros del método
+% 3. Gráfica de la función
+printf('\n-> Generando gráfica de f(x) en [%.2f, %.2f]...\n', a, b);
+graficar_funcion(f, a, b, f_str);
+
+% 4. Parámetros del método
 printf('\n-----------------------------------------------------------------\n');
 tol = 0;
 while tol <= 0
@@ -199,7 +257,7 @@ if ~isempty(entrada) && str2double(entrada) > 0
     max_iter = round(str2double(entrada));
 end
 
-% 4. Validación y cálculo de cada raíz
+% 5. Validación y cálculo de cada raíz
 raices = zeros(num_raices, 1);
 for i = 1:num_raices
     a_i = intervalos(i, 1);
@@ -240,4 +298,10 @@ printf('                       RESUMEN DE RAÍCES                         \n');
 printf('=================================================================\n');
 for i = 1:num_raices
     printf('  x%d = %.6f\n', i, raices(i));
+end
+
+% 6. Gráfica con las raíces marcadas
+if any(isfinite(raices))
+    graficar_funcion(f, a, b, f_str, raices);
+    printf('\n-> Gráfica actualizada con las raíces marcadas en rojo.\n');
 end

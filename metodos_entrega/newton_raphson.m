@@ -38,28 +38,51 @@ end
 % -------------------------------------------------------------------------
 
 function graficar_funcion(f, a, b, f_str, raices)
-    % GRAFICAR_FUNCION Grafica f(x) con fplot, la recta f(x)=0 y las raíces
+    % Grafica f(x) en [a, b] con fplot, la recta f(x) = 0 y, si se pasan,
+    % las raíces calculadas marcadas en rojo con su valor.
+    if nargin < 5
+        raices = [];
+    end
+    raices = raices(isfinite(raices));
+
     try
         figure(1);
         clf;
         fplot(f, [a, b], 'b-', 'LineWidth', 2);
+        h_f = findobj(gca, 'Type', 'line');
         hold on; grid on;
-        line([a, b], [0, 0], 'Color', 'r', 'LineStyle', '--', 'LineWidth', 1.5);
-        xlabel('Variable independiente (x)');
+        h_eje = line([a, b], [0, 0], 'Color', 'k', 'LineStyle', '--', 'LineWidth', 1);
+        xlabel('x');
         ylabel('f(x)');
         title(['f(x) = ' f_str]);
 
-        if nargin >= 5 && ~isempty(raices)
-            y_raices = arrayfun(f, raices);
-            plot(raices, y_raices, 'ko', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
-            legend('f(x)', 'f(x) = 0', 'Raíces calculadas', 'Location', 'northeast');
+        % Límites en y robustos: ignora valores no finitos y recorta los
+        % picos de asíntotas (ej. 1/x) para que el cruce con el eje se vea
+        y = sort(f(linspace(a, b, 500)));
+        y = y(isfinite(y));
+        if ~isempty(y)
+            n = numel(y);
+            y_min = min(y(max(1, round(0.02 * n))), 0);
+            y_max = max(y(max(1, round(0.98 * n))), 0);
+            margen = 0.1 * max(y_max - y_min, eps);
+            ylim([y_min - margen, y_max + margen]);
+        end
+        xlim([a, b]);
+
+        if isempty(raices)
+            legend([h_f, h_eje], {'f(x)', 'f(x) = 0'}, 'Location', 'northeastoutside');
         else
-            legend('f(x)', 'f(x) = 0', 'Location', 'northeast');
+            h_r = plot(raices, f(raices), 'ko', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+            for k = 1:numel(raices)
+                text(raices(k), 0, sprintf('  x%d = %.4f', k, raices(k)), ...
+                     'VerticalAlignment', 'bottom', 'FontWeight', 'bold');
+            end
+            legend([h_f, h_eje, h_r], {'f(x)', 'f(x) = 0', 'Raíces'}, 'Location', 'northeastoutside');
         end
         hold off;
         drawnow;
-    catch
-        % Manejo en caso de ejecución en terminales sin interfaz gráfica
+    catch err
+        printf('No se pudo generar la gráfica: %s\n', err.message);
     end
 end
 
