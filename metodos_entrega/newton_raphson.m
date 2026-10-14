@@ -7,10 +7,12 @@
 %   2. Cálculo automático de derivadas (df(x) y d2f(x)) por diferencias
 %      finitas de alta precisión (orden O(h^4)), sin requerir ingreso manual.
 %   3. Separación de raíces por Método de Tanteo (búsqueda incremental).
-%   4. Validación de las condiciones suficientes de convergencia de Fourier.
-%   5. Elección óptima del punto inicial x0 según Fourier (f(x0)*d2f(x0) > 0).
-%   6. Ejecución del método de Newton-Raphson con tabla prolija de iteraciones.
-%   7. Soporte para calcular todas las raíces detectadas en el tanteo.
+%   4. Gráfica interactiva de la función con fplot y eje horizontal f(x) = 0.
+%   5. Validación de las condiciones suficientes de convergencia de Fourier.
+%   6. Elección óptima del punto inicial x0 según Fourier (f(x0)*d2f(x0) > 0).
+%   7. Ejecución del método de Newton-Raphson con tabla prolija de iteraciones.
+%   8. Marcado visual de las raíces halladas sobre la gráfica.
+%   9. Soporte para calcular todas las raíces detectadas en el tanteo.
 % =========================================================================
 
 1; % Declaración de script en GNU Octave
@@ -32,7 +34,37 @@ function d2 = deriv_segunda(f, x)
 end
 
 % -------------------------------------------------------------------------
-% 2. Método de Tanteo (Búsqueda Incremental)
+% 2. Graficador de función (estilo ejercicio 2 del TP3)
+% -------------------------------------------------------------------------
+
+function graficar_funcion(f, a, b, f_str, raices)
+    % GRAFICAR_FUNCION Grafica f(x) con fplot, la recta f(x)=0 y las raíces
+    try
+        figure(1);
+        clf;
+        fplot(f, [a, b], 'b-', 'LineWidth', 2);
+        hold on; grid on;
+        line([a, b], [0, 0], 'Color', 'r', 'LineStyle', '--', 'LineWidth', 1.5);
+        xlabel('Variable independiente (x)');
+        ylabel('f(x)');
+        title(['f(x) = ' f_str]);
+
+        if nargin >= 5 && ~isempty(raices)
+            y_raices = arrayfun(f, raices);
+            plot(raices, y_raices, 'ko', 'MarkerSize', 8, 'MarkerFaceColor', 'r');
+            legend('f(x)', 'f(x) = 0', 'Raíces calculadas', 'Location', 'northeast');
+        else
+            legend('f(x)', 'f(x) = 0', 'Location', 'northeast');
+        end
+        hold off;
+        drawnow;
+    catch
+        % Manejo en caso de ejecución en terminales sin interfaz gráfica
+    end
+end
+
+% -------------------------------------------------------------------------
+% 3. Método de Tanteo (Búsqueda Incremental)
 % -------------------------------------------------------------------------
 
 function intervalos = ejecutar_tanteo(f, a, b, paso)
@@ -70,7 +102,7 @@ function intervalos = ejecutar_tanteo(f, a, b, paso)
 end
 
 % -------------------------------------------------------------------------
-% 3. Validación de Condiciones de Convergencia de Fourier
+% 4. Validación de Condiciones de Convergencia de Fourier
 % -------------------------------------------------------------------------
 
 function [cumple, x0_fourier] = validar_fourier(f, a, b)
@@ -169,7 +201,7 @@ function [cumple, x0_fourier] = validar_fourier(f, a, b)
 end
 
 % -------------------------------------------------------------------------
-% 4. Algoritmo de Newton-Raphson
+% 5. Algoritmo de Newton-Raphson
 % -------------------------------------------------------------------------
 
 function [raiz, iter, tabla] = ejecutar_newton_raphson(f, x0, tol, max_iter)
@@ -227,7 +259,7 @@ end
 clc;
 printf('=================================================================\n');
 printf('             MÉTODO DE NEWTON-RAPHSON INTERACTIVO                \n');
-printf('   Con Tanteo Previo y Validación de Condiciones de Fourier      \n');
+printf('   Con Tanteo Previo, Gráfica y Validación de Fourier            \n');
 printf('=================================================================\n\n');
 
 % -------------------------------------------------------------------------
@@ -311,7 +343,13 @@ for i = 1:num_raices
 end
 
 % -------------------------------------------------------------------------
-% PASO 3: Parámetros del Método de Newton-Raphson
+% PASO 3: Gráfica inicial de la función con fplot (Estilo Ejercicio 2)
+% -------------------------------------------------------------------------
+printf('\n-> Generando gráfica de f(x) en el intervalo [%.2f, %.2f]...\n', a_tanteo, b_tanteo);
+graficar_funcion(f, a_tanteo, b_tanteo, f_str);
+
+% -------------------------------------------------------------------------
+% PASO 4: Parámetros del Método de Newton-Raphson
 % -------------------------------------------------------------------------
 printf('\n-----------------------------------------------------------------\n');
 printf('              PARÁMETROS DE NEWTON-RAPHSON                       \n');
@@ -332,8 +370,10 @@ if ~isempty(strtrim(max_iter_in)) && str2double(max_iter_in) > 0
 end
 
 % -------------------------------------------------------------------------
-% PASO 4: Validación de Fourier y Cálculo de Raíces para cada intervalo
+% PASO 5: Validación de Fourier y Cálculo de Raíces para cada intervalo
 % -------------------------------------------------------------------------
+raices_calculadas = [];
+
 for i = 1:num_raices
     a_i = intervalos(i, 1);
     b_i = intervalos(i, 2);
@@ -361,6 +401,8 @@ for i = 1:num_raices
     [raiz_aprox, iteraciones, ~] = ejecutar_newton_raphson(f, x0, tol, max_iter);
     tiempo_computo = toc;
 
+    raices_calculadas = [raices_calculadas, raiz_aprox];
+
     % Muestra final de resultados
     printf('\n================== RESULTADOS DE LA RAÍZ %d ==================\n', i);
     printf('Intervalo analizado  : [%.6f, %.6f]\n', a_i, b_i);
@@ -371,6 +413,12 @@ for i = 1:num_raices
     printf('Iteraciones reales   : %d\n', iteraciones);
     printf('Tiempo de cómputo    : %.6f segundos\n', tiempo_computo);
     printf('===============================================================\n');
+end
+
+% Actualización de la gráfica con las raíces encontradas
+if ~isempty(raices_calculadas)
+    graficar_funcion(f, a_tanteo, b_tanteo, f_str, raices_calculadas);
+    printf('-> Gráfica actualizada con las raíces marcadas en rojo.\n');
 end
 
 printf('\nProceso finalizado con éxito para todas las raíces encontradas.\n');
