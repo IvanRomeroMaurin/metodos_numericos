@@ -4,11 +4,11 @@
 %
 % Características:
 %   1. Carga de la función f(x) por teclado de forma interactiva.
-%   2. Cálculo automático de derivadas (f'(x) y f''(x)) por diferencias             '
+%   2. Cálculo automático de derivadas (df(x) y d2f(x)) por diferencias
 %      finitas de alta precisión (orden O(h^4)), sin requerir ingreso manual.
 %   3. Separación de raíces por Método de Tanteo (búsqueda incremental).
 %   4. Validación de las condiciones suficientes de convergencia de Fourier.
-%   5. Elección óptima del punto inicial x0 según Fourier (f(x0)*f''(x0) > 0).
+%   5. Elección óptima del punto inicial x0 según Fourier (f(x0)*d2f(x0) > 0).
 %   6. Ejecución del método de Newton-Raphson con tabla prolija de iteraciones.
 %   7. Soporte para calcular todas las raíces detectadas en el tanteo.
 % =========================================================================
@@ -76,9 +76,9 @@ end
 function [cumple, x0_fourier] = validar_fourier(f, a, b)
     % Evalúa las 4 condiciones de Fourier para Newton-Raphson en [a, b]:
     % 1. Existencia: f(a)*f(b) <= 0
-    % 2. Monotonía: f'(x) != 0 y no cambia de signo en [a, b]
-    % 3. Concavidad: f''(x) != 0 y no cambia de signo en [a, b]
-    % 4. Elección de x0 tal que f(x0)*f''(x0) > 0
+    % 2. Monotonía: df(x) != 0 y no cambia de signo en [a, b]
+    % 3. Concavidad: d2f(x) != 0 y no cambia de signo en [a, b]
+    % 4. Elección de x0 tal que f(x0)*d2f(x0) > 0
 
     fa = f(a);
     fb = f(b);
@@ -135,27 +135,27 @@ function [cumple, x0_fourier] = validar_fourier(f, a, b)
     end
 
     % Condición 2
-    printf('\n2. Monotonía estricta: f''(x) != 0 y no cambia de signo en [a, b]\n');
-    printf('   f''(a) = %12.5e  |  f''(b) = %12.5e\n', dfa, dfb);
+    printf('\n2. Monotonía estricta: df(x) != 0 y no cambia de signo en [a, b]\n');
+    printf('   df(a) = %12.5e  |  df(b) = %12.5e\n', dfa, dfb);
     if c2_monotonia
         printf('   [CUMPLE] La derivada primera conserva el signo (función monótona).\n');
     else
-        printf('   [ADVERTENCIA] f''(x) cambia de signo o se anula (puede haber extremo local).\n');
+        printf('   [ADVERTENCIA] df(x) cambia de signo o se anula (puede haber extremo local).\n');
     end
 
     % Condición 3
-    printf('\n3. Concavidad estricta: f''''(x) != 0 y no cambia de signo en [a, b]\n');
-    printf('   f''''(a) = %12.5e  |  f''''(b) = %12.5e\n', d2fa, d2fb);
+    printf('\n3. Concavidad estricta: d2f(x) != 0 y no cambia de signo en [a, b]\n');
+    printf('   d2f(a) = %12.5e  |  d2f(b) = %12.5e\n', d2fa, d2fb);
     if c3_concavidad
         printf('   [CUMPLE] La concavidad no cambia (no hay punto de inflexión).\n');
     else
-        printf('   [ADVERTENCIA] f''''(x) cambia de signo o se anula en el intervalo.\n');
+        printf('   [ADVERTENCIA] d2f(x) cambia de signo o se anula en el intervalo.\n');
     end
 
     % Condición 4
-    printf('\n4. Criterio de Fourier para el valor inicial x0: f(x0) * f''''(x0) > 0\n');
-    printf('   Extremo a = %10.4f -> f(a)*f''''(a) = %12.5e\n', a, prod_a);
-    printf('   Extremo b = %10.4f -> f(b)*f''''(b) = %12.5e\n', b, prod_b);
+    printf('\n4. Criterio de Fourier para el valor inicial x0: f(x0) * d2f(x0) > 0\n');
+    printf('   Extremo a = %10.4f -> f(a)*d2f(a) = %12.5e\n', a, prod_a);
+    printf('   Extremo b = %10.4f -> f(b)*d2f(b) = %12.5e\n', b, prod_b);
     printf('   -> Punto de arranque recomendado por Fourier: x0 = %.6f\n', x0_fourier);
 
     if cumple
@@ -179,7 +179,7 @@ function [raiz, iter, tabla] = ejecutar_newton_raphson(f, x0, tol, max_iter)
     printf('Punto inicial x0 = %.8f  |  Tolerancia = %.2e\n', x0, tol);
     printf('%s\n', repmat('-', 1, 68));
     printf('%-4s | %-14s | %-14s | %-14s | %-12s\n', ...
-           'k', 'x_k', 'f(x_k)', 'f''(x_k)', 'Error |dx|');
+           'k', 'x_k', 'f(x_k)', 'df(x_k)', 'Error |dx|');
     printf('%s\n', repmat('-', 1, 68));
 
     x = x0;
@@ -367,7 +367,7 @@ for i = 1:num_raices
     printf('Punto inicial x0     : %.6f\n', x0);
     printf('Raíz calculada x*    : %.8f\n', raiz_aprox);
     printf('Residuo f(x*)        : %.8e\n', f(raiz_aprox));
-    printf('Derivada f''(x*)      : %.8e\n', deriv_primera(f, raiz_aprox));
+    printf('Derivada df(x*)      : %.8e\n', deriv_primera(f, raiz_aprox));
     printf('Iteraciones reales   : %d\n', iteraciones);
     printf('Tiempo de cómputo    : %.6f segundos\n', tiempo_computo);
     printf('===============================================================\n');
