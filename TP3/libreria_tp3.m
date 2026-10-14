@@ -127,7 +127,7 @@ function [raiz, iter, tabla, n_teorico] = metodo_intervalo_medio(f, a, b, tol, m
         cota_error = (b - a) / 2;
 
         if mostrar_tabla
-            printf('%4d | [%9.6f, %9.6f] | %11.6f | %14.6e | %12.6e\n', ...
+            printf('%4d | [%9.6f, %9.6f] | %11.6f | %14.6e | %12.6f\n', ...
                    k, a, b, c, fc, cota_error);
         end
 
@@ -193,7 +193,7 @@ function [raiz, iter, tabla] = metodo_interpolacion_lineal(f, a, b, tol, max_ite
         printf('\n--- Método de Interpolación Lineal (Regula Falsi) ---\n');
         printf('Intervalo inicial: [%.4f, %.4f] | Tolerancia: %.6f\n\n', a, b, tol);
         printf('%-4s | %-11s | %-11s | %-11s | %-14s | %-12s\n', ...
-               'k', 'a', 'b', 'c (secante)', 'f(c)', 'Error Paso');
+               'k', 'a', 'b', 'c (secante)', 'f(c)', 'Error');
         printf('%s\n', repmat('-', 1, 75));
     end
 
@@ -206,7 +206,7 @@ function [raiz, iter, tabla] = metodo_interpolacion_lineal(f, a, b, tol, max_ite
         error_paso = abs(c - c_ant);
 
         if mostrar_tabla
-            printf('%4d | %11.6f | %11.6f | %11.6f | %14.6e | %12.6e\n', ...
+            printf('%4d | %11.6f | %11.6f | %11.6f | %14.6e | %12.6f\n', ...
                    k, a, b, c, fc, error_paso);
         end
 
@@ -266,7 +266,7 @@ function [raiz, iter, tabla] = metodo_newton_raphson(f, df, x0, tol, max_iter, m
         printf('\n--- Método de Newton-Raphson ---\n');
         printf('Punto inicial x0 = %.6f | Tolerancia = %.6e\n\n', x0, tol);
         printf('%-4s | %-12s | %-14s | %-14s | %-12s\n', ...
-               'k', 'x_k', 'f(x_k)', 'f''(x_k)', 'Error Paso');
+               'k', 'x_k', 'f(x_k)', 'f''(x_k)', 'Error');
         printf('%s\n', repmat('-', 1, 68));
     end
 
@@ -451,7 +451,7 @@ function [raiz, iter, tabla] = metodo_punto_fijo(g, x0, tol, max_iter, usar_aitk
         if mostrar_tabla
             printf('\n--- Método de Punto Fijo Simple: x = g(x) ---\n');
             printf('Punto inicial x0 = %.6f | Tolerancia = %.6e\n\n', x0, tol);
-            printf('%-4s | %-14s | %-14s | %-14s\n', 'k', 'x_k', 'x_{k+1}=g(x_k)', 'Error Paso');
+            printf('%-4s | %-14s | %-14s | %-14s\n', 'k', 'x_k', 'x_{k+1}=g(x_k)', 'Error');
             printf('%s\n', repmat('-', 1, 58));
         end
 
@@ -476,7 +476,7 @@ function [raiz, iter, tabla] = metodo_punto_fijo(g, x0, tol, max_iter, usar_aitk
         if mostrar_tabla
             printf('\n--- Método de Punto Fijo con Aceleración de Aitken (Delta^2) ---\n');
             printf('Punto inicial x0 = %.6f | Tolerancia = %.6e\n\n', x0, tol);
-            printf('%-4s | %-14s | %-14s | %-14s\n', 'Ciclo', 'x_base', 'x_aitken', 'Error Paso');
+            printf('%-4s | %-14s | %-14s | %-14s\n', 'Ciclo', 'x_base', 'x_aitken', 'Error');
             printf('%s\n', repmat('-', 1, 58));
         end
 
