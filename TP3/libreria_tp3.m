@@ -44,13 +44,12 @@ function intervalos = metodo_tanteo(f, a, b, incremento, mostrar_tabla)
     f_actual = f(x_actual);
 
     if mostrar_tabla
-        printf('\n%-5s | %-12s | %-14s | %-15s\n', ...
-               'Paso', 'x', 'f(x)', 'Cambio Signo');
-        printf('%s\n', repmat('-', 1, 52));
-        printf('%5d | %12.4f | %14.6f | %-15s\n', 1, x_actual, f_actual, '-');
+        printf('\n%-12s | %-14s | %-15s\n', ...
+               'x_i', 'f(x_i)', 'Cambio Signo');
+        printf('%s\n', repmat('-', 1, 46));
+        printf('%12.4f | %14.6f | %-15s\n', x_actual, f_actual, '-');
     end
 
-    k = 2;
     while x_actual < b
         x_sig = min(x_actual + incremento, b);
         f_sig = f(x_sig);
@@ -65,13 +64,11 @@ function intervalos = metodo_tanteo(f, a, b, incremento, mostrar_tabla)
         end
 
         if mostrar_tabla
-            printf('%5d | %12.4f | %14.6f | %-15s\n', ...
-                   k, x_sig, f_sig, marca);
+            printf('%12.4f | %14.6f | %-15s\n', x_sig, f_sig, marca);
         end
 
         x_actual = x_sig;
         f_actual = f_sig;
-        k = k + 1;
     end
 end
 
@@ -116,8 +113,8 @@ function [raiz, iter, tabla, n_teorico] = metodo_intervalo_medio(f, a, b, tol, m
         printf('\n--- Método de Intervalo Medio (Bisección) ---\n');
         printf('Intervalo inicial: [%.4f, %.4f] | Tolerancia: %.6f\n', a, b, tol);
         printf('Iteraciones teóricas mínimas estimadas: %d\n\n', n_teorico);
-        printf('%-4s | %-11s | %-11s | %-11s | %-14s | %-12s\n', ...
-               'k', 'a', 'b', 'c (medio)', 'f(c)', 'Error Cota');
+        printf('%-4s | %-22s | %-11s | %-14s | %-12s\n', ...
+               'k', 'Intervalo', 'x', 'f(x)', 'Error');
         printf('%s\n', repmat('-', 1, 75));
     end
 
@@ -130,7 +127,7 @@ function [raiz, iter, tabla, n_teorico] = metodo_intervalo_medio(f, a, b, tol, m
         cota_error = (b - a) / 2;
 
         if mostrar_tabla
-            printf('%4d | %11.6f | %11.6f | %11.6f | %14.6e | %12.6e\n', ...
+            printf('%4d | [%9.6f, %9.6f] | %11.6f | %14.6e | %12.6e\n', ...
                    k, a, b, c, fc, cota_error);
         end
 

@@ -30,9 +30,6 @@ printf('  Rango físico válido de profundidad: 0 <= h <= 2*R  -->  [0, 6] metro
 % -------------------------------------------------------------------------
 % Inciso a: Evaluación gráfica con fplot
 % -------------------------------------------------------------------------
-printf('-----------------------------------------------------------------\n');
-printf('a) Evaluación gráfica de la función con fplot\n');
-printf('-----------------------------------------------------------------\n');
 try
     figure(1);
     fplot(f, [0, 6], 'b-', 'LineWidth', 2);
@@ -43,7 +40,6 @@ try
     ylabel('f(h)');
     title('Ejercicio 1: f(h) = \pi h^2 (3 - h/3) - 30');
     legend('f(h)', 'f(h) = 0 (Eje de corte)', 'Location', 'NorthWest');
-    printf('-> Gráfico generado en la Figura 1. Se observa corte cerca de h in [2, 3].\n\n');
 catch err
     printf('-> Nota sobre entorno gráfico: %s\n\n', err.message);
 end
@@ -122,27 +118,4 @@ printf('  Residuo f(h):          %.8e\n', f(h_rf));
 printf('  Iteraciones reales:   %d\n', iter_rf);
 printf('  Tiempo de cómputo:    %.6f s\n\n', t_rf);
 
-% -------------------------------------------------------------------------
-% Inciso d: Comparación de métodos y conclusiones
-% -------------------------------------------------------------------------
-printf('-----------------------------------------------------------------\n');
-printf('d) Cuadro comparativo de métodos y conclusiones\n');
-printf('-----------------------------------------------------------------\n');
 
-printf('%-24s | %-12s | %-14s | %-12s | %-12s\n', ...
-       'Método', 'Raíz h [m]', 'Residuo f(h)', 'Iteraciones', 'Tiempo [s]');
-printf('%s\n', repmat('-', 1, 85));
-printf('%-24s | %12.6f | %14.6e | %12d | %12.6f\n', ...
-       'Intervalo Medio', h_bis, f(h_bis), iter_bis, t_bis);
-printf('%-24s | %12.6f | %14.6e | %12d | %12.6f\n', ...
-       'Interpolación Lineal', h_rf, f(h_rf), iter_rf, t_rf);
-printf('%s\n\n', repmat('-', 1, 85));
-
-printf('Conclusiones:\n');
-printf('1. Convergencia: El Método de Interpolación Lineal converge en menos iteraciones\n');
-printf('   (%d vs %d) gracias a que aproxima la pendiente con la recta secante, reduciendo\n', iter_rf, iter_bis);
-printf('   el intervalo de forma más eficiente que la simple división a la mitad.\n');
-printf('2. Robustez: Ambos métodos son cerrados (bracketing) y garantizan convergencia\n');
-printf('   debido a que se verificó previamente el Teorema de Bolzano en [%.2f, %.2f].\n', a_raiz, b_raiz);
-printf('3. Significado físico: La profundidad requerida para acumular 30 m^3 de líquido\n');
-printf('   en el tanque de radio R = 3 m es de aproximadamente h = %.4f metros.\n', h_rf);
