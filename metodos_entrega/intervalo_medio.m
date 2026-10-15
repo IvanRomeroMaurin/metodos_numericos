@@ -190,13 +190,17 @@ end
 % PROGRAMA PRINCIPAL
 % =========================================================================
 clc;
+
+
+
+
 printf('=================================================================\n');
 printf('          MÉTODO DE INTERVALO MEDIO (BISECCIÓN)                  \n');
 printf('=================================================================\n\n');
 
 % 1. Ingreso de la función
 printf('Ingrese la función f(x) en términos de x.\n');
-printf('Ejemplos:  pi*x^2*(3 - x/3) - 30   |   exp(-x) - x   |   sin(x) - 0.5*x\n\n');
+printf('Ejemplos:  pi*x^2*(3 - x/3) - 30   |   8*x + 0.3*x^2 - 0.0013*x^3 - 372\n\n');
 
 f = [];
 while isempty(f)
@@ -273,12 +277,14 @@ for i = 1:num_raices
         continue;
     end
 
+    %Metodo de intervalo medio
     tic;
     [raices(i), iter, n_teorico] = metodo_intervalo_medio(f, a_i, b_i, tol, max_iter);
     tiempo = toc;
 
     % Si |f| creció respecto de los extremos, el cambio de signo era una
     % discontinuidad (ej. 1/x en x = 0) y no una raíz
+
     if abs(f(raices(i))) > max(abs(f(a_i)), abs(f(b_i)))
         printf('\n[NO CUMPLE] |f(x)| crece cerca de x = %.6f: hay una discontinuidad, no una raíz.\n', raices(i));
         raices(i) = NaN;
