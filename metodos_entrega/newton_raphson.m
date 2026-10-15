@@ -228,14 +228,14 @@ end
 % -------------------------------------------------------------------------
 
 function [raiz, iter, tabla] = ejecutar_newton_raphson(f, x0, tol, max_iter)
-    printf('\n-------------------------------------------------------------\n');
-    printf('            ITERACIONES DEL MÉTODO DE NEWTON-RAPHSON          \n');
-    printf('-------------------------------------------------------------\n');
+    printf('\n-------------------------------------------------------------------------------------\n');
+    printf('                      ITERACIONES DEL MÉTODO DE NEWTON-RAPHSON                       \n');
+    printf('-------------------------------------------------------------------------------------\n');
     printf('Punto inicial x0 = %.8f  |  Tolerancia = %.2e\n', x0, tol);
-    printf('%s\n', repmat('-', 1, 68));
-    printf('%-4s | %-14s | %-14s | %-14s | %-12s\n', ...
-           'k', 'x_k', 'f(x_k)', 'df(x_k)', 'Error |dx|');
-    printf('%s\n', repmat('-', 1, 68));
+    printf('%s\n', repmat('-', 1, 87));
+    printf('%-4s | %-14s | %-14s | %-14s | %-14s | %-12s\n', ...
+           'k', 'x_k', 'f(x_k)', 'df(x_k)', 'x_(k+1)', 'Error |dx|');
+    printf('%s\n', repmat('-', 1, 87));
 
     x = x0;
     tabla = [];
@@ -253,17 +253,17 @@ function [raiz, iter, tabla] = ejecutar_newton_raphson(f, x0, tol, max_iter)
 
         % Criterio de parada
         if error_paso < tol || abs(fx) < tol
-            printf('%4d | %14.8f | %14.6e | %14.6e | %12.6e  (Fin)\n', ...
-                   k - 1, x, fx, dfx, error_paso);
-            tabla = [tabla; k - 1, x, fx, dfx, error_paso];
+            printf('%4d | %14.8f | %14.6e | %14.6e | %14.8f | %12.6e  (Fin)\n', ...
+                   k - 1, x, fx, dfx, x_sig, error_paso);
+            tabla = [tabla; k - 1, x, fx, dfx, x_sig, error_paso];
             raiz = x_sig;
             iter = k;
-            printf('%s\n', repmat('-', 1, 68));
+            printf('%s\n', repmat('-', 1, 87));
             return;
         else
-            printf('%4d | %14.8f | %14.6e | %14.6e | %12.6e\n', ...
-                   k - 1, x, fx, dfx, error_paso);
-            tabla = [tabla; k - 1, x, fx, dfx, error_paso];
+            printf('%4d | %14.8f | %14.6e | %14.6e | %14.8f | %12.6e\n', ...
+                   k - 1, x, fx, dfx, x_sig, error_paso);
+            tabla = [tabla; k - 1, x, fx, dfx, x_sig, error_paso];
         end
 
         x = x_sig;
@@ -271,7 +271,7 @@ function [raiz, iter, tabla] = ejecutar_newton_raphson(f, x0, tol, max_iter)
 
     raiz = x;
     iter = max_iter;
-    printf('%s\n', repmat('-', 1, 68));
+    printf('%s\n', repmat('-', 1, 87));
     warning('Se alcanzó el número máximo de iteraciones permitidas (%d).', max_iter);
 end
 
