@@ -11,6 +11,26 @@
 %   5. Verificación contra la solución de referencia de Octave.
 %   6. Gráfica comparativa de la solución obtenida.
 % =========================================================================
+%
+% ENUNCIADO (ejemplo práctico usado en este archivo):
+%
+% Una compañía electrónica produce transistores, resistores y chips de
+% computadora. Cada transistor requiere 4,3 unidades de cobre, 1 unidad de
+% zinc y 2 unidades de vidrio. Cada resistor requiere 3 unidades de cobre,
+% 3 unidades de zinc y 1 unidad de vidrio. Cada chip de computadora
+% requiere 2 unidades de cobre, 1 unidad de zinc y 3 unidades de vidrio.
+%
+% Los suministros de estos materiales varían de una semana a la otra, por
+% lo que la compañía necesita recalcular su producción cada vez. Cierta
+% semana cuenta con 960 unidades de cobre, 510 unidades de zinc y 610
+% unidades de vidrio disponibles.
+%
+% ¿Cuántos transistores, resistores y chips de computadora debe producir
+% la compañía esa semana, de modo que consuma exactamente la totalidad de
+% los materiales disponibles, sin que sobre ni falte ninguno? Plantee el
+% sistema de ecuaciones correspondiente y resuélvalo aplicando el método
+% de Gauss-Jordan.
+% =========================================================================
 
 1; % Declaración de script en GNU Octave
 
