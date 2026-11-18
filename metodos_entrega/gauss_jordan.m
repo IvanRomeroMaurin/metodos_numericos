@@ -8,8 +8,7 @@
 %   3. Resolución mediante el método de condensación (reduce una columna
 %      por etapa, conservando n filas) tal como lo enseña la cátedra.
 %   4. Tabla detallada de cada etapa de la condensación.
-%   5. Verificación contra la solución de referencia de Octave.
-%   6. Gráfica comparativa de la solución obtenida.
+%   5. Verificación de la solución reemplazando en el sistema (A*x vs b).
 % =========================================================================
 %
 % ENUNCIADO (ejemplo práctico usado en este archivo):
@@ -87,26 +86,44 @@ end
 % -------------------------------------------------------------------------
 % 2. Método de Gauss-Jordan por condensación
 % -------------------------------------------------------------------------
-function solucion_x = resolver_gauss_jordan(matriz_A, vector_b)
+function [solucion_x, cantidad_intercambios] = resolver_gauss_jordan(matriz_A, vector_b)
     % En cada etapa se usa la fila 1 como pivote: las filas restantes se
     % reducen y la fila pivote normalizada pasa a la ultima posicion de
     % una tabla con una columna menos. Tras 'n' etapas, la columna final
     % es directamente la solucion x1..xn en su orden original.
     n = length(vector_b);
-    tabla_actual = [matriz_A, vector_b(:)];
+    tabla_actual = [matriz_A, vector_b(:)];   % matriz ampliada [A | b]
+    cantidad_intercambios = 0;                % contador de intercambios de filas
 
     printf('\n=================================================================\n');
     printf('              ETAPAS DE LA CONDENSACION                           \n');
     printf('=================================================================\n');
+    printf('\nTabla inicial [A | b]:\n');
+    disp(tabla_actual);
 
     for etapa = 1:n
+        % Pivoteo parcial: se busca la fila con mayor |valor| en la primera columna,
+        % solo entre las filas no usadas como pivote (las ultimas etapa-1 ya lo fueron)
+        filas_candidatas = n - etapa + 1;
+        [~, fila_max] = max(abs(tabla_actual(1:filas_candidatas, 1)));
+        if fila_max ~= 1
+            % Se intercambia esa fila con la fila 1 (no altera la solucion)
+            tabla_actual([1, fila_max], :) = tabla_actual([fila_max, 1], :);
+            cantidad_intercambios = cantidad_intercambios + 1;
+            printf('\n   Intercambio en etapa %d: fila 1 <-> fila %d\n', etapa, fila_max);
+        end
+
+        % Pivote de la etapa: elemento a_11 de la tabla actual
         pivote = tabla_actual(1, 1);
         if abs(pivote) < 1e-12
-            error('Gauss-Jordan: el pivote de la etapa %d es nulo. Reordene las filas.', etapa);
+            error('Gauss-Jordan: el pivote de la etapa %d es nulo aun tras intercambiar filas.', etapa);
         end
+
+        % La nueva tabla tiene una columna menos (se elimina la incognita actual)
         columnas_actuales = size(tabla_actual, 2);
         tabla_siguiente = zeros(n, columnas_actuales - 1);
 
+        % Reduccion de las filas 2..n: a_ij - (a_1j * a_i1) / pivote
         for fila = 2:n
             factor_fila = tabla_actual(fila, 1);
             for columna = 2:columnas_actuales
@@ -114,71 +131,85 @@ function solucion_x = resolver_gauss_jordan(matriz_A, vector_b)
                 tabla_siguiente(fila - 1, columna - 1) = tabla_actual(fila, columna) - termino_reduccion;
             end
         end
+        % La fila pivote, dividida por el pivote, pasa a la ultima fila
         for columna = 2:columnas_actuales
             tabla_siguiente(n, columna - 1) = tabla_actual(1, columna) / pivote;
         end
 
         printf('\n-- Etapa %d (pivote a_11 = %.6g) --\n', etapa, pivote);
-        printf('Tabla antes de condensar:\n');
-        disp(tabla_actual);
-        printf('Tabla despues de condensar (queda con %d columnas):\n', columnas_actuales - 1);
         disp(tabla_siguiente);
 
+        % La tabla condensada pasa a ser la tabla de la proxima etapa
         tabla_actual = tabla_siguiente;
     end
+    % Al terminar queda una sola columna: la solucion x1..xn
     solucion_x = tabla_actual;
 end
 
 % =========================================================================
 % PROGRAMA PRINCIPAL
 % =========================================================================
-clc;
 printf('=================================================================\n');
 printf('            METODO DE GAUSS-JORDAN (POR CONDENSACION)             \n');
 printf('=================================================================\n\n');
 
 printf('Ejemplo practico (produccion de componentes electronicos, TP4):\n');
-printf('  Una companhia produce transistores, resistores y chips. Cada uno\n');
+printf('  Una compania produce transistores, resistores y chips. Cada uno\n');
 printf('  consume cobre, zinc y vidrio segun la tabla de coeficientes A, y\n');
 printf('  se dispone de b unidades de cada material por semana.\n');
 printf('  A = [4.3 3 2; 1 3 1; 2 1 3]   b = [960; 510; 610]\n\n');
 
-matriz_A = input('Ingrese la matriz de coeficientes A (ej: [4.3 3 2; 1 3 1; 2 1 3]): ');
-vector_b = input('Ingrese el vector de terminos independientes b (ej: [960; 510; 610]): ');
+% Valores por defecto (ejemplo del enunciado): se usan si se presiona Enter
+A_defecto = [4.3 3 2; 1 3 1; 2 1 3];
+b_defecto = [960; 510; 610];
+
+matriz_A = input('Ingrese la matriz de coeficientes A (Enter = [4.3 3 2; 1 3 1; 2 1 3]): ');
+if isempty(matriz_A)
+    matriz_A = A_defecto;
+    printf('  -> Se usa A por defecto.\n');
+end
+vector_b = input('Ingrese el vector de terminos independientes b (Enter = [960; 510; 610]): ');
+if isempty(vector_b)
+    vector_b = b_defecto;
+    printf('  -> Se usa b por defecto.\n');
+end
 
 if ~validar_condiciones(matriz_A, vector_b)
     error('No se cumplen las condiciones necesarias para aplicar el metodo de Gauss-Jordan.');
 end
 
+% Resolucion del sistema midiendo el tiempo de computo
 tic;
-solucion_gauss_jordan = resolver_gauss_jordan(matriz_A, vector_b);
+[solucion_gauss_jordan, cantidad_intercambios] = resolver_gauss_jordan(matriz_A, vector_b);
 tiempo_computo = toc;
-
-solucion_referencia = matriz_A \ vector_b(:);
 
 printf('\n=================================================================\n');
 printf('                      RESULTADOS FINALES                          \n');
 printf('=================================================================\n');
-printf('%-6s %16s %18s %14s\n', 'x_i', 'Gauss-Jordan', 'Referencia Octave', 'Error abs.');
-printf('-----------------------------------------------------------------\n');
+printf('Solucion obtenida:\n');
 for i = 1:length(vector_b)
-    printf('x_%-4d %16.6f %18.6f %14.4e\n', i, solucion_gauss_jordan(i), solucion_referencia(i), ...
-        abs(solucion_gauss_jordan(i) - solucion_referencia(i)));
+    printf('  x_%d = %.6f\n', i, solucion_gauss_jordan(i));
 end
-printf('-----------------------------------------------------------------\n');
-printf('Residuo ||A*x - b||inf : %.4e\n', norm(matriz_A * solucion_gauss_jordan(:) - vector_b(:), inf));
-printf('Tiempo de computo       : %.6f segundos\n', tiempo_computo);
-printf('=================================================================\n');
 
-% Grafico comparativo
-figure('Name', 'Gauss-Jordan: solucion obtenida');
-bar([solucion_gauss_jordan(:), solucion_referencia(:)]);
-etiquetas = cell(1, length(vector_b));
+% Verificacion: se reemplaza la solucion en el sistema y se compara A*x con b
+producto_Ax = matriz_A * solucion_gauss_jordan(:);
+error_abs = abs(producto_Ax - vector_b(:));
+
+printf('\n=================================================================\n');
+printf('              VERIFICACION: A*x CONTRA b                          \n');
+printf('=================================================================\n');
+printf('%-8s %16s %16s %14s\n', 'Ecuacion', '(A*x)_i', 'b_i', 'Error abs.');
+printf('-----------------------------------------------------------------\n');
 for i = 1:length(vector_b)
-    etiquetas{i} = sprintf('x_%d', i);
+    printf('%-8d %16.6f %16.6f %14.4e\n', i, producto_Ax(i), vector_b(i), error_abs(i));
 end
-set(gca, 'xticklabel', etiquetas);
-legend('Gauss-Jordan', 'Referencia Octave', 'Location', 'best');
-ylabel('Valor');
-title('Solucion por Gauss-Jordan vs. solucion de referencia');
-grid on;
+printf('-----------------------------------------------------------------\n');
+printf('Error maximo (mayor |A*x - b|) : %.4e\n', max(error_abs));
+% Informe de intercambios de filas realizados durante la condensacion
+if cantidad_intercambios > 0
+    printf('Intercambios de filas          : %d (se reordenaron filas para poder calcular)\n', cantidad_intercambios);
+else
+    printf('Intercambios de filas          : ninguno\n');
+end
+printf('Tiempo de computo              : %.6f segundos\n', tiempo_computo);
+printf('=================================================================\n');
