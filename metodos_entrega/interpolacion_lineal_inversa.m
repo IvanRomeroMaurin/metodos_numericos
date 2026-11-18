@@ -117,9 +117,26 @@ printf('  x = [15 25 35 45 55 65]\n');
 printf('  y = [0.965926 0.906308 0.819152 0.707107 0.573576 0.422618]\n');
 printf('  Se busca el valor de x para el cual y = 0.90728517\n\n');
 
-x_datos = input('Ingrese el vector de x equidistantes (ej: [15 25 35 45 55 65]): ');
-y_datos = input('Ingrese el vector de y = f(x) (ej: [0.965926 0.906308 0.819152 0.707107 0.573576 0.422618]): ');
-y_buscado = input('Ingrese el valor de y para el cual se busca x (ej: 0.90728517): ');
+% Valores por defecto (ejemplo del enunciado): se usan si se presiona Enter
+x_defecto = [15 25 35 45 55 65];
+y_defecto = [0.965926 0.906308 0.819152 0.707107 0.573576 0.422618];
+y_buscado_defecto = 0.90728517;
+
+x_datos = input('Ingrese el vector de x equidistantes (Enter = [15 25 35 45 55 65]): ');
+if isempty(x_datos)
+    x_datos = x_defecto;
+    printf('  -> Se usa x por defecto.\n');
+end
+y_datos = input('Ingrese el vector de y = f(x) (Enter = [0.965926 0.906308 0.819152 0.707107 0.573576 0.422618]): ');
+if isempty(y_datos)
+    y_datos = y_defecto;
+    printf('  -> Se usa y por defecto.\n');
+end
+y_buscado = input('Ingrese el valor de y para el cual se busca x (Enter = 0.90728517): ');
+if isempty(y_buscado)
+    y_buscado = y_buscado_defecto;
+    printf('  -> Se usa y buscado por defecto.\n');
+end
 
 [cumple, indice] = validar_condiciones(x_datos, y_datos, y_buscado);
 if ~cumple
