@@ -1,5 +1,5 @@
 % =========================================================================
-% MÉTODO DE GAUSS-JORDAN POR CONDENSACIÓN
+% MÉTODO DE GAUSS-JORDAN
 % Métodos Numéricos / Métodos Computacionales
 %
 % Características:
@@ -84,7 +84,7 @@ function cumple = validar_condiciones(matriz_A, vector_b)
 end
 
 % -------------------------------------------------------------------------
-% 2. Método de Gauss-Jordan por condensación
+% 2. Método de Gauss-Jordan 
 % -------------------------------------------------------------------------
 function [solucion_x, cantidad_intercambios] = resolver_gauss_jordan(matriz_A, vector_b)
     % En cada etapa se usa la fila 1 como pivote: las filas restantes se
@@ -150,7 +150,7 @@ end
 % PROGRAMA PRINCIPAL
 % =========================================================================
 printf('=================================================================\n');
-printf('            METODO DE GAUSS-JORDAN (POR CONDENSACION)             \n');
+printf('                METODO DE GAUSS-JORDAN                             \n');
 printf('=================================================================\n\n');
 
 printf('Ejemplo practico (produccion de componentes electronicos, TP4):\n');
