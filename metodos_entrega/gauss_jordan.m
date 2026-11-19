@@ -125,9 +125,10 @@ function [solucion_x, cantidad_intercambios] = resolver_gauss_jordan(matriz_A, v
 
         % Reduccion de las filas 2..n: a_ij - (a_1j * a_i1) / pivote
         for fila = 2:n
-            factor_fila = tabla_actual(fila, 1);
+            factor_fila = tabla_actual(fila, 1);              % a_i1: fijo para la fila
             for columna = 2:columnas_actuales
-                termino_reduccion = (tabla_actual(1, columna) * factor_fila) / pivote;
+                factor_columna = tabla_actual(1, columna);    % a_1j: cambia por columna
+                termino_reduccion = (factor_columna * factor_fila) / pivote;
                 tabla_siguiente(fila - 1, columna - 1) = tabla_actual(fila, columna) - termino_reduccion;
             end
         end
